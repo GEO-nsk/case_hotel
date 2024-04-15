@@ -103,6 +103,17 @@ class Clients(Hotel):
                 self.info['Количество дней'] = line_list[6]
                 self.info['Максимальная сумма'] = line_list[7]
 
+                all_possible_costs = []
+                '''
+                if self.info['Количество людей'] == 1:
+                    for k,v in self.single_free:
+                        all_possible_costs.append(v[4])
+                        all_possible_costs.append(v[5])
+                        all_possible_costs.append(v[6])
+                
+                print(all_possible_costs)
+                '''
+
     def repr(self):
         return f'Info: {self.info}'
 
