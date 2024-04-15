@@ -113,7 +113,19 @@ class Clients(Hotel):
                             all_possible_costs.append(hotel.single_free[i][5])
                         if hotel.single_free[i][6] <= int(self.info['Максимальная сумма']):
                             all_possible_costs.append(hotel.single_free[i][6])
-                print(max(all_possible_costs))
+                maxi_cost = max(all_possible_costs)
+
+                cnt = 0
+                for k,v in hotel.single_free.items():
+                    if v[4] == maxi_cost or v[5] == maxi_cost or v[4] == maxi_cost:
+                        hotel.single_full[k] = v
+                        hotel.single_full[k].append(self.info['Дата въезда'])
+                        hotel.single_full[k].append(self.info['Количество дней'])
+                        cnt = k
+
+                del hotel.single_free[str(cnt)]
+                print(hotel.single_full)
+                print(hotel.single_free)
 
     def __repr__(self):
         return f'Info: {self.info}'
