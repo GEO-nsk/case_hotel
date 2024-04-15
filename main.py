@@ -1,4 +1,5 @@
 hotel_file_name = 'fund.txt'
+booking_file = 'booking_copy.txt'
 
 class Hotel:
     def __init__(self):
@@ -82,8 +83,30 @@ hotel = Hotel()
 
 hotel.read_file(hotel_file_name)
 
-print(hotel.single_free)
-print(hotel.double_free)
-print(hotel.half_luxe_free)
-print(hotel.luxe_free)
 
+class Clients(Hotel):
+    def init(self):
+        self.info = {'Количество людей': '',
+                     'Дата въезда': '',
+                     'Количество дней': '',
+                     'Максимальная сумма': ''}
+
+    def read_booking_file(self, booking):
+        with open(booking_file, 'r', encoding='utf-8') as file:
+            for item in file:
+                line_list = []
+                for itr in item.split():
+                    line_list.append(itr)
+
+                self.info['Количество людей'] = line_list[4]
+                self.info['Дата въезда'] = line_list[5]
+                self.info['Количество дней'] = line_list[6]
+                self.info['Максимальная сумма'] = line_list[7]
+
+    def repr(self):
+        return f'Info: {self.info}'
+
+
+client = Clients()
+client.read_booking_file(booking_file)
+print(client)
