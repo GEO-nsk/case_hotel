@@ -85,13 +85,13 @@ hotel.read_file(hotel_file_name)
 
 
 class Clients(Hotel):
-    def init(self):
+    def __init__(self):
         self.info = {'Количество людей': '',
                      'Дата въезда': '',
                      'Количество дней': '',
                      'Максимальная сумма': ''}
 
-    def read_booking_file(self, booking):
+    def read_booking_file(self, booking_file):
         with open(booking_file, 'r', encoding='utf-8') as file:
             for item in file:
                 line_list = []
@@ -104,20 +104,21 @@ class Clients(Hotel):
                 self.info['Максимальная сумма'] = line_list[7]
 
                 all_possible_costs = []
-                '''
-                if self.info['Количество людей'] == 1:
-                    for k,v in self.single_free:
-                        all_possible_costs.append(v[4])
-                        all_possible_costs.append(v[5])
-                        all_possible_costs.append(v[6])
-                
-                print(all_possible_costs)
-                '''
 
-    def repr(self):
+                if self.info['Количество людей'] == '1':
+                    for i in hotel.single_free:
+                        if hotel.single_free[i][4] <= int(self.info['Максимальная сумма']):
+                            all_possible_costs.append(hotel.single_free[i][4])
+                        if hotel.single_free[i][5] <= int(self.info['Максимальная сумма']):
+                            all_possible_costs.append(hotel.single_free[i][5])
+                        if hotel.single_free[i][6] <= int(self.info['Максимальная сумма']):
+                            all_possible_costs.append(hotel.single_free[i][6])
+                print(max(all_possible_costs))
+
+    def __repr__(self):
         return f'Info: {self.info}'
 
 
 client = Clients()
 client.read_booking_file(booking_file)
-print(client)
+#print(client)
