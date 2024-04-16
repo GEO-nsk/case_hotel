@@ -111,6 +111,7 @@ hotel.read_file(hotel_file_name)
 class Clients(Hotel):
     def __init__(self):
         self.info = {}
+        self.profit = 0
 
     def read_booking_file(self, booking_file):
         count = 0
@@ -474,28 +475,28 @@ for day in range(1,3):
         if day == int(enter_date[0][1:2]):
             if enter_date[4] == '1':
                 print('new_client')
-                print(client.find_single(enter_date))
+                client.profit += client.find_single(enter_date)
                 print(hotel.single_free)
                 print(hotel.single_full)
                 print(hotel.half_luxe_free)
                 print(hotel.half_luxe_full)
             if enter_date[4] == '2':
                 print('new_client')
-                print(client.find_double(enter_date))
+                client.profit += client.find_double(enter_date)
                 print(hotel.double_free)
                 print(hotel.double_full)
                 print(hotel.half_luxe_free)
                 print(hotel.half_luxe_full)
             if enter_date[4] == '3':
                 print('new_client')
-                print(client.find_half_luxe(enter_date))
+                client.profit += client.find_half_luxe(enter_date)
                 print(hotel.half_luxe_free)
                 print(hotel.half_luxe_full)
                 print(hotel.luxe_free)
                 print(hotel.luxe_full)
             if enter_date[4] == '4' or enter_date[4] == '5' or enter_date[4] == '6':
                 print('new_client')
-                print(client.find_luxe(enter_date))
+                client.profit += client.find_luxe(enter_date)
                 print(hotel.luxe_free)
                 print(hotel.luxe_full)
 print('final')
@@ -507,3 +508,4 @@ print(hotel.half_luxe_free)
 print(hotel.half_luxe_full)
 print(hotel.luxe_free)
 print(hotel.luxe_full)
+print(client.profit)
