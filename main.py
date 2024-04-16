@@ -84,6 +84,29 @@ hotel = Hotel()
 hotel.read_file(hotel_file_name)
 
 
+class Date:
+    def __init__(self, entry_date, duration):
+        self.entry_date = entry_date
+        self.dd = int(entry_date[:2])
+        self.mm = int(entry_date[3:5])
+        self.yyyy = int(entry_date[6:10])
+        self.duration = int(duration)
+        self.departure_date = None
+
+    def get_departure_date(self):
+        self.dd += self.duration
+        if self.dd > 31:
+            self.mm += 1
+            self.dd -= 31
+        if self.mm > 12:
+            self.yyyy += 1
+            self.mm -= 12
+        self.departure_date = f'{self.dd:02d}.{self.mm:02d}.{self.yyyy}'
+
+    def __repr__(self):
+        return f'Дата въезда: {self.entry_date}\nДата выезда: {self.departure_date}'
+
+
 class Clients(Hotel):
     def __init__(self):
         self.info = {'Количество людей': '',
