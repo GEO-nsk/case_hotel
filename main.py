@@ -35,6 +35,7 @@ class Hotel(Date):
         self.double_full = {}
         self.half_luxe_full = {}
         self.luxe_full = {}
+        self.profit = []
 
     def read_file(self, hotel_file_name):
         with open(hotel_file_name, 'r', encoding='utf-8') as file:
@@ -162,6 +163,7 @@ class Clients(Hotel):
                 for i in out_list_luxe:
                     del hotel.luxe_full[i]
 
+                maxi_cost = 0
 
                 if self.info['Количество людей'] == '1':
                     for i in hotel.single_free:
@@ -179,7 +181,7 @@ class Clients(Hotel):
                                 all_possible_costs.append(hotel.half_luxe_free[i][5])
                             if hotel.half_luxe_free[i][6] <= int(self.info['Максимальная сумма']):
                                 all_possible_costs.append(hotel.half_luxe_free[i][6])
-                    print(all_possible_costs)
+                    #print(all_possible_costs)
                     if len(all_possible_costs):
                         maxi_cost = max(all_possible_costs)
                         print(maxi_cost)
@@ -224,7 +226,7 @@ class Clients(Hotel):
                                         all_possible_costs.append(hotel.half_luxe_free[i][5])
                                     if hotel.half_luxe_free[i][6] <= int(self.info['Максимальная сумма']):
                                         all_possible_costs.append(hotel.half_luxe_free[i][6])
-                            print(all_possible_costs)
+                            #print(all_possible_costs)
                             if len(all_possible_costs):
                                 maxi_cost = max(all_possible_costs)
                                 print(maxi_cost)
@@ -271,7 +273,7 @@ class Clients(Hotel):
                                 all_possible_costs.append(hotel.half_luxe_free[i][5])
                             if hotel.half_luxe_free[i][6] <= int(self.info['Максимальная сумма']):
                                 all_possible_costs.append(hotel.half_luxe_free[i][6])
-                    print(all_possible_costs)
+                    #print(all_possible_costs)
                     if len(all_possible_costs):
                         maxi_cost = max(all_possible_costs)
                         print(maxi_cost)
@@ -317,7 +319,7 @@ class Clients(Hotel):
                                         all_possible_costs.append(hotel.luxe_free[i][5])
                                     if hotel.luxe_free[i][6] <= int(self.info['Максимальная сумма']):
                                         all_possible_costs.append(hotel.luxe_free[i][6])
-                            print(all_possible_costs)
+                            #print(all_possible_costs)
                             if len(all_possible_costs):
                                 maxi_cost = max(all_possible_costs)
                                 print(maxi_cost)
@@ -366,7 +368,7 @@ class Clients(Hotel):
                                 all_possible_costs.append(hotel.luxe_free[i][5])
                             if hotel.luxe_free[i][6] <= int(self.info['Максимальная сумма']):
                                 all_possible_costs.append(hotel.luxe_free[i][6])
-                    print(all_possible_costs)
+                    #print(all_possible_costs)
                     if len(all_possible_costs):
                         maxi_cost = max(all_possible_costs)
                         print(maxi_cost)
@@ -405,7 +407,7 @@ class Clients(Hotel):
                                         all_possible_costs.append(hotel.luxe_free[i][5])
                                     if hotel.luxe_free[i][6] <= int(self.info['Максимальная сумма']):
                                         all_possible_costs.append(hotel.luxe_free[i][6])
-                            print(all_possible_costs)
+                            #print(all_possible_costs)
                             if len(all_possible_costs):
                                 maxi_cost = max(all_possible_costs)
                                 print(maxi_cost)
@@ -440,7 +442,7 @@ class Clients(Hotel):
                                 all_possible_costs.append(hotel.luxe_free[i][5])
                             if hotel.luxe_free[i][6] <= int(self.info['Максимальная сумма']):
                                 all_possible_costs.append(hotel.luxe_free[i][6])
-                    print(all_possible_costs)
+                    #print(all_possible_costs)
                     if len(all_possible_costs):
                         maxi_cost = max(all_possible_costs)
                         print(maxi_cost)
@@ -463,15 +465,17 @@ class Clients(Hotel):
                         #print(hotel.single_free)
                     else:
                         print('вы бомж')
-                print('new_client')
-                print(hotel.single_free)
-                print(hotel.single_full)
-                print(hotel.double_free)
-                print(hotel.double_full)
-                print(hotel.half_luxe_free)
-                print(hotel.half_luxe_full)
-                print(hotel.luxe_free)
-                print(hotel.luxe_full)
+
+                hotel.profit.append(maxi_cost)
+                #print('new_client')
+                #print(hotel.single_free)
+                #print(hotel.single_full)
+                #print(hotel.double_free)
+                #print(hotel.double_full)
+                #print(hotel.half_luxe_free)
+                #print(hotel.half_luxe_full)
+                #print(hotel.luxe_free)
+                #print(hotel.luxe_full)
 
 
     def __repr__(self):
