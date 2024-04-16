@@ -1,7 +1,31 @@
 hotel_file_name = 'fund.txt'
 booking_file = 'booking_copy.txt'
 
-class Hotel:
+class Date:
+    def __init__(self, entry_date, duration):
+        self.entry_date = entry_date
+        self.dd = int(entry_date[:2])
+        self.mm = int(entry_date[3:5])
+        self.yyyy = int(entry_date[6:10])
+        self.duration = int(duration)
+        self.departure_date = None
+
+    def get_departure_date(self):
+        self.dd += self.duration
+        if self.dd > 31:
+            self.mm += 1
+            self.dd -= 31
+        if self.mm > 12:
+            self.yyyy += 1
+            self.mm -= 12
+        self.departure_date = f'{self.dd:02d}.{self.mm:02d}.{self.yyyy}'
+        return self.departure_date
+
+    def __repr__(self):
+        return f'Дата въезда: {self.entry_date}\nДата выезда: {self.departure_date}'
+
+
+class Hotel(Date):
     def __init__(self):
         self.single_free = {}
         self.double_free = {}
@@ -84,29 +108,6 @@ hotel = Hotel()
 hotel.read_file(hotel_file_name)
 
 
-class Date:
-    def __init__(self, entry_date, duration):
-        self.entry_date = entry_date
-        self.dd = int(entry_date[:2])
-        self.mm = int(entry_date[3:5])
-        self.yyyy = int(entry_date[6:10])
-        self.duration = int(duration)
-        self.departure_date = None
-
-    def get_departure_date(self):
-        self.dd += self.duration
-        if self.dd > 31:
-            self.mm += 1
-            self.dd -= 31
-        if self.mm > 12:
-            self.yyyy += 1
-            self.mm -= 12
-        self.departure_date = f'{self.dd:02d}.{self.mm:02d}.{self.yyyy}'
-
-    def __repr__(self):
-        return f'Дата въезда: {self.entry_date}\nДата выезда: {self.departure_date}'
-
-
 class Clients(Hotel):
     def __init__(self):
         self.info = {'Количество людей': '',
@@ -153,16 +154,16 @@ class Clients(Hotel):
                         for k,v in hotel.single_free.items():
                             if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
                                 hotel.single_full[k] = v
-                                hotel.single_full[k].append(self.info['Дата въезда'])
-                                hotel.single_full[k].append(self.info['Количество дней'])
+                                new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                hotel.single_full[k].append(new_date.get_departure_date())
                                 cnt = k
                                 break
                         for k,v in hotel.half_luxe_free.items():
                             if v[2] == '1':
                                 if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
                                     hotel.half_luxe_full[k] = v
-                                    hotel.half_luxe_full[k].append(self.info['Дата въезда'])
-                                    hotel.half_luxe_full[k].append(self.info['Количество дней'])
+                                    new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                    hotel.half_luxe_full[k].append(new_date.get_departure_date())
                                     cnt = k
                                     break
 
@@ -200,16 +201,16 @@ class Clients(Hotel):
                         for k,v in hotel.double_free.items():
                             if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
                                 hotel.double_full[k] = v
-                                hotel.double_full[k].append(self.info['Дата въезда'])
-                                hotel.double_full[k].append(self.info['Количество дней'])
+                                new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                hotel.double_full[k].append(new_date.get_departure_date())
                                 cnt = k
                                 break
                         for k,v in hotel.half_luxe_free.items():
                             if v[2] == '2':
                                 if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
                                     hotel.half_luxe_full[k] = v
-                                    hotel.half_luxe_full[k].append(self.info['Дата въезда'])
-                                    hotel.half_luxe_full[k].append(self.info['Количество дней'])
+                                    new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                    hotel.half_luxe_full[k].append(new_date.get_departure_date())
                                     cnt = k
                                     break
 
@@ -249,16 +250,16 @@ class Clients(Hotel):
                             if v[2] == '3':
                                 if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
                                     hotel.half_luxe_full[k] = v
-                                    hotel.half_luxe_full[k].append(self.info['Дата въезда'])
-                                    hotel.half_luxe_full[k].append(self.info['Количество дней'])
+                                    new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                    hotel.half_luxe_full[k].append(new_date.get_departure_date())
                                     cnt = k
                                     break
                         for k,v in hotel.luxe_free.items():
                             if v[2] == '3':
                                 if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
                                     hotel.luxe_full[k] = v
-                                    hotel.luxe_full[k].append(self.info['Дата въезда'])
-                                    hotel.luxe_full[k].append(self.info['Количество дней'])
+                                    new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                    hotel.luxe_full[k].append(new_date.get_departure_date())
                                     cnt = k
                                     break
 
@@ -288,20 +289,12 @@ class Clients(Hotel):
                         print(maxi_cost)
 
                         cnt = 0
-                        for k,v in hotel.half_luxe_free.items():
-                            if v[2] == '4' or v[2] == '5' or v[2] == '6':
-                                if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                                    hotel.half_luxe_full[k] = v
-                                    hotel.half_luxe_full[k].append(self.info['Дата въезда'])
-                                    hotel.half_luxe_full[k].append(self.info['Количество дней'])
-                                    cnt = k
-                                    break
                         for k,v in hotel.luxe_free.items():
                             if v[2] == '4' or v[2] == '5' or v[2] == '6':
                                 if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
                                     hotel.luxe_full[k] = v
-                                    hotel.luxe_full[k].append(self.info['Дата въезда'])
-                                    hotel.luxe_full[k].append(self.info['Количество дней'])
+                                    new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                    hotel.luxe_full[k].append(new_date.get_departure_date())
                                     cnt = k
                                     break
 
