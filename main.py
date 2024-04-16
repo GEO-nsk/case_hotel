@@ -122,12 +122,46 @@ class Clients(Hotel):
                 for itr in item.split():
                     line_list.append(itr)
 
+                self.info['дата'] = line_list[0]
                 self.info['Количество людей'] = line_list[4]
                 self.info['Дата въезда'] = line_list[5]
                 self.info['Количество дней'] = line_list[6]
                 self.info['Максимальная сумма'] = line_list[7]
 
                 all_possible_costs = []
+
+                out_list_single = []
+                for k,v in hotel.single_full.items():
+                    if v[7] == self.info['дата']:
+                        hotel.single_free[k] = v
+                        out_list_single.append(k)
+                for i in out_list_single:
+                    del hotel.single_full[i]
+
+                out_list_double = []
+                for k, v in hotel.double_full.items():
+                    if v[7] == self.info['дата']:
+                        hotel.double_free[k] = v
+                        out_list_double.append(k)
+                for i in out_list_double:
+                    del hotel.double_full[i]
+
+                out_list_half_luxe = []
+                for k, v in hotel.half_luxe_full.items():
+                    if v[7] == self.info['дата']:
+                        hotel.half_luxe_free[k] = v
+                        out_list_half_luxe.append(k)
+                for i in out_list_half_luxe:
+                    del hotel.half_luxe_full[i]
+
+                out_list_luxe = []
+                for k, v in hotel.luxe_full.items():
+                    if v[7] == self.info['дата']:
+                        hotel.luxe_free[k] = v
+                        out_list_luxe.append(k)
+                for i in out_list_luxe:
+                    del hotel.luxe_full[i]
+
 
                 if self.info['Количество людей'] == '1':
                     for i in hotel.single_free:
@@ -174,7 +208,52 @@ class Clients(Hotel):
                         #print(hotel.single_full)
                         #print(hotel.single_free)
                     else:
-                        print('вы бомж')
+                        if self.info['Количество людей'] == '1':
+                            for i in hotel.double_free:
+                                if hotel.double_free[i][4] <= int(self.info['Максимальная сумма']):
+                                    all_possible_costs.append(hotel.double_free[i][4])
+                                if hotel.double_free[i][5] <= int(self.info['Максимальная сумма']):
+                                    all_possible_costs.append(hotel.double_free[i][5])
+                                if hotel.double_free[i][6] <= int(self.info['Максимальная сумма']):
+                                    all_possible_costs.append(hotel.double_free[i][6])
+                            for i in hotel.half_luxe_free:
+                                if hotel.half_luxe_free[i][2] == '1':
+                                    if hotel.half_luxe_free[i][4] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.half_luxe_free[i][4])
+                                    if hotel.half_luxe_free[i][5] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.half_luxe_free[i][5])
+                                    if hotel.half_luxe_free[i][6] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.half_luxe_free[i][6])
+                            print(all_possible_costs)
+                            if len(all_possible_costs):
+                                maxi_cost = max(all_possible_costs)
+                                print(maxi_cost)
+
+                                cnt = 0
+                                for k, v in hotel.double_free.items():
+                                    if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
+                                        hotel.double_full[k] = v
+                                        new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                        hotel.double_full[k].append(new_date.get_departure_date())
+                                        cnt = k
+                                        break
+                                for k, v in hotel.half_luxe_free.items():
+                                    if v[2] == '1':
+                                        if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
+                                            hotel.half_luxe_full[k] = v
+                                            new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                            hotel.half_luxe_full[k].append(new_date.get_departure_date())
+                                            cnt = k
+                                            break
+
+                                if cnt in hotel.double_free.keys():
+                                    del hotel.double_free[str(cnt)]
+                                if cnt in hotel.half_luxe_free.keys():
+                                    del hotel.half_luxe_free[str(cnt)]
+                                # print(hotel.single_full)
+                                # print(hotel.single_free)
+                            else:
+                                print('вы бомж')
 
                 if self.info['Количество людей'] == '2':
                     for i in hotel.double_free:
@@ -221,7 +300,54 @@ class Clients(Hotel):
                         #print(hotel.single_full)
                         #print(hotel.single_free)
                     else:
-                        print('вы бомж')
+                        if self.info['Количество людей'] == '2':
+                            for i in hotel.half_luxe_free:
+                                if hotel.half_luxe_free[i][2] == '2':
+                                    if hotel.half_luxe_free[i][4] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.half_luxe_free[i][4])
+                                    if hotel.half_luxe_free[i][5] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.half_luxe_free[i][5])
+                                    if hotel.half_luxe_free[i][6] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.half_luxe_free[i][6])
+                            for i in hotel.luxe_free:
+                                if hotel.luxe_free[i][2] == '2':
+                                    if hotel.luxe_free[i][4] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.luxe_free[i][4])
+                                    if hotel.luxe_free[i][5] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.luxe_free[i][5])
+                                    if hotel.luxe_free[i][6] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.luxe_free[i][6])
+                            print(all_possible_costs)
+                            if len(all_possible_costs):
+                                maxi_cost = max(all_possible_costs)
+                                print(maxi_cost)
+
+                                cnt = 0
+                                for k, v in hotel.half_luxe_free.items():
+                                    if v[2] == '2':
+                                        if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
+                                            hotel.half_luxe_full[k] = v
+                                            new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                            hotel.half_luxe_full[k].append(new_date.get_departure_date())
+                                            cnt = k
+                                            break
+                                for k, v in hotel.luxe_free.items():
+                                    if v[2] == '2':
+                                        if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
+                                            hotel.luxe_full[k] = v
+                                            new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                            hotel.luxe_full[k].append(new_date.get_departure_date())
+                                            cnt = k
+                                            break
+
+                                if cnt in hotel.half_luxe_free.keys():
+                                    del hotel.half_luxe_free[str(cnt)]
+                                if cnt in hotel.luxe_free.keys():
+                                    del hotel.luxe_free[str(cnt)]
+                                # print(hotel.single_full)
+                                # print(hotel.single_free)
+                            else:
+                                print('вы бомж')
 
                 if self.info['Количество людей'] == '3':
                     for i in hotel.half_luxe_free:
@@ -270,7 +396,38 @@ class Clients(Hotel):
                         #print(hotel.single_full)
                         #print(hotel.single_free)
                     else:
-                        print('вы бомж')
+                        if self.info['Количество людей'] == '3':
+                            for i in hotel.luxe_free:
+                                if hotel.luxe_free[i][2] == '3':
+                                    if hotel.luxe_free[i][4] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.luxe_free[i][4])
+                                    if hotel.luxe_free[i][5] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.luxe_free[i][5])
+                                    if hotel.luxe_free[i][6] <= int(self.info['Максимальная сумма']):
+                                        all_possible_costs.append(hotel.luxe_free[i][6])
+                            print(all_possible_costs)
+                            if len(all_possible_costs):
+                                maxi_cost = max(all_possible_costs)
+                                print(maxi_cost)
+
+                                cnt = 0
+                                for k, v in hotel.luxe_free.items():
+                                    if v[2] == '3':
+                                        if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
+                                            hotel.luxe_full[k] = v
+                                            new_date = Date(self.info['Дата въезда'], self.info['Количество дней'])
+                                            hotel.luxe_full[k].append(new_date.get_departure_date())
+                                            cnt = k
+                                            break
+
+                                if cnt in hotel.half_luxe_free.keys():
+                                    del hotel.half_luxe_free[str(cnt)]
+                                if cnt in hotel.luxe_free.keys():
+                                    del hotel.luxe_free[str(cnt)]
+                                # print(hotel.single_full)
+                                # print(hotel.single_free)
+                            else:
+                                print('вы бомж')
 
                 if self.info['Количество людей'] == '4' or self.info['Количество людей'] == '5' or \
                         self.info['Количество людей'] == '6':
