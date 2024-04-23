@@ -139,24 +139,24 @@ class Clients(Hotel):
             self.single_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
             return True
         else:
-            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()) < int(period[0][:2]))
-                   or (int(entry_date[:2]) > int(period[1][:2]) and int(entry_date.get_departure_date()) > int(period[1][:2]))
+            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(period[0][:2]))
+                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(period[1][:2]))
                    for period in self.single_free_que[room_type]):
                 self.single_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
                 return True
             else:
                 return False
 
-    def time_check_double(self, entry_date, duration, room_type):
+    def time_check_double(self, entry_date, duration, room_type, room_num):
         date = Date(entry_date, duration)
         if len(self.double_free_que) == 0:
-            self.double_free_que[room_type].append((entry_date, date.get_departure_date()))
+            self.double_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
             return True
         else:
-            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()) < int(period[0][:2]))
-                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()) > int(period[1][:2]))
+            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(period[0][:2]))
+                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(period[1][:2]))
                    for period in self.double_free_que[room_type]):
-                self.double_free_que[room_type].append((entry_date, date.get_departure_date()))
+                self.double_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
                 return True
             else:
                 return False
@@ -167,24 +167,24 @@ class Clients(Hotel):
             self.half_luxe_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
             return True
         else:
-            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()) < int(period[0][:2]))
-                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()) > int(period[1][:2]))
+            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(period[0][:2]))
+                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(period[1][:2]))
                    for period in self.half_luxe_free_que[room_type]):
                 self.half_luxe_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
                 return True
             else:
                 return False
 
-    def time_check_luxe(self, entry_date, duration, room_type):
+    def time_check_luxe(self, entry_date, duration, room_type, room_num):
         date = Date(entry_date, duration)
         if len(self.luxe_free_que) == 0:
-            self.luxe_free_que[room_type].append((entry_date, date.get_departure_date()))
+            self.luxe_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
             return True
         else:
-            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()) < int(period[0][:2]))
-                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()) > int(period[1][:2]))
+            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(period[0][:2]))
+                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(period[1][:2]))
                    for period in self.luxe_free_que[room_type]):
-                self.luxe_free_que[room_type].append((entry_date, date.get_departure_date()))
+                self.luxe_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
                 return True
             else:
                 return False
@@ -208,14 +208,12 @@ class Clients(Hotel):
                     all_possible_costs.append(hotel.half_luxe_free[i][6])
         if len(all_possible_costs):
             maxi_cost = max(all_possible_costs)
-            print(maxi_cost)
-            print(all_possible_costs)
 
             cnt = 0
             for k, v in hotel.single_free.items():
                 if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                    hotel.single_full[k] = v
-                    if self.time_check_single(enter_date[5], enter_date[6], hotel.single_full[k][3], k):
+                    if self.time_check_single(enter_date[5], enter_date[6], hotel.single_free[k][3], k):
+                        hotel.single_full[k] = v
                         new_date = Date(enter_date[5], enter_date[6])
                         hotel.single_full[k].append(new_date.get_departure_date())
                         cnt = k
@@ -223,9 +221,8 @@ class Clients(Hotel):
             for k, v in hotel.half_luxe_free.items():
                 if v[2] == '1':
                     if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                        hotel.half_luxe_full[k] = v
-                        if self.time_check_half_luxe(enter_date[5], enter_date[6], hotel.half_luxe_full[k][3], k):
-                            #print(hotel.half_luxe_full[k][3])
+                        if self.time_check_half_luxe(enter_date[5], enter_date[6], hotel.half_luxe_free[k][3], k):
+                            hotel.half_luxe_full[k] = v
                             new_date = Date(enter_date[5], enter_date[6])
                             hotel.half_luxe_full[k].append(new_date.get_departure_date())
                             cnt = k
@@ -233,21 +230,8 @@ class Clients(Hotel):
 
             if cnt in hotel.single_free.keys():
                 del hotel.single_free[str(cnt)]
-
-                for room in self.single_free_que:
-                    if len(self.single_free_que[room]) > 0:
-                        for j in range(len(self.single_free_que[room])):
-                            if self.single_free_que[room[j][2]] == cnt:
-                                del self.single_free_que[room[j]]
-
             if cnt in hotel.half_luxe_free.keys():
                 del hotel.half_luxe_free[str(cnt)]
-
-                for room in self.half_luxe_free:
-                    if len(self.half_luxe_free[room]) > 0:
-                        for j in range(len(self.half_luxe_free[room])):
-                            if self.half_luxe_free[room[j][2]] == cnt:
-                                del self.half_luxe_free[room[j]]
 
             Clients.day_profit += maxi_cost
 
@@ -268,27 +252,27 @@ class Clients(Hotel):
                         all_possible_costs.append(hotel.half_luxe_free[i][5])
                     if hotel.half_luxe_free[i][6] <= int(enter_date[7]):
                         all_possible_costs.append(hotel.half_luxe_free[i][6])
-            print(all_possible_costs)
             if len(all_possible_costs):
                 maxi_cost = max(all_possible_costs)
-                print(maxi_cost)
 
                 cnt = 0
                 for k, v in hotel.double_free.items():
                     if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                        hotel.double_full[k] = v
-                        new_date = Date(enter_date[5], enter_date[6])
-                        hotel.double_full[k].append(new_date.get_departure_date())
-                        cnt = k
-                        break
+                        if self.time_check_double(enter_date[5], enter_date[6], hotel.double_free[k][3], k):
+                            hotel.double_full[k] = v
+                            new_date = Date(enter_date[5], enter_date[6])
+                            hotel.double_full[k].append(new_date.get_departure_date())
+                            cnt = k
+                            break
                 for k, v in hotel.half_luxe_free.items():
                     if v[2] == '1':
                         if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                            hotel.half_luxe_full[k] = v
-                            new_date = Date(enter_date[5], enter_date[6])
-                            hotel.half_luxe_full[k].append(new_date.get_departure_date())
-                            cnt = k
-                            break
+                            if self.time_check_half_luxe(enter_date[5], enter_date[6], hotel.half_luxe_free[k][3], k):
+                                hotel.half_luxe_full[k] = v
+                                new_date = Date(enter_date[5], enter_date[6])
+                                hotel.half_luxe_full[k].append(new_date.get_departure_date())
+                                cnt = k
+                                break
 
                 if cnt in hotel.double_free.keys():
                     del hotel.double_free[str(cnt)]
@@ -299,7 +283,7 @@ class Clients(Hotel):
 
                 return maxi_cost
             else:
-                Clients.day_lost += int(enter_date[7])
+                client.day_lost += int(enter_date[7])
                 return 0
 
     def find_double(self, enter_date):
@@ -319,27 +303,27 @@ class Clients(Hotel):
                     all_possible_costs.append(hotel.half_luxe_free[i][5])
                 if hotel.half_luxe_free[i][6] <= int(enter_date[7]):
                     all_possible_costs.append(hotel.half_luxe_free[i][6])
-        print(all_possible_costs)
         if len(all_possible_costs):
             maxi_cost = max(all_possible_costs)
-            print(maxi_cost)
 
             cnt = 0
             for k, v in hotel.double_free.items():
                 if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                    hotel.double_full[k] = v
-                    new_date = Date(enter_date[5], enter_date[6])
-                    hotel.double_full[k].append(new_date.get_departure_date())
-                    cnt = k
-                    break
+                    if self.time_check_double(enter_date[5], enter_date[6], hotel.double_free[k][3], k):
+                        hotel.double_full[k] = v
+                        new_date = Date(enter_date[5], enter_date[6])
+                        hotel.double_full[k].append(new_date.get_departure_date())
+                        cnt = k
+                        break
             for k, v in hotel.half_luxe_free.items():
                 if v[2] == '2':
                     if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                        hotel.half_luxe_full[k] = v
-                        new_date = Date(enter_date[5], enter_date[6])
-                        hotel.half_luxe_full[k].append(new_date.get_departure_date())
-                        cnt = k
-                        break
+                        if self.time_check_half_luxe(enter_date[5], enter_date[6], hotel.half_luxe_free[k][3], k):
+                            hotel.half_luxe_full[k] = v
+                            new_date = Date(enter_date[5], enter_date[6])
+                            hotel.half_luxe_full[k].append(new_date.get_departure_date())
+                            cnt = k
+                            break
 
             if cnt in hotel.double_free.keys():
                 del hotel.double_free[str(cnt)]
@@ -366,28 +350,28 @@ class Clients(Hotel):
                         all_possible_costs.append(hotel.luxe_free[i][5])
                     if hotel.luxe_free[i][6] <= int(enter_date[7]):
                         all_possible_costs.append(hotel.luxe_free[i][6])
-            print(all_possible_costs)
             if len(all_possible_costs):
                 maxi_cost = max(all_possible_costs)
-                print(maxi_cost)
 
                 cnt = 0
                 for k, v in hotel.half_luxe_free.items():
                     if v[2] == '2':
                         if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                            hotel.half_luxe_full[k] = v
-                            new_date = Date(enter_date[5], enter_date[6])
-                            hotel.half_luxe_full[k].append(new_date.get_departure_date())
-                            cnt = k
-                            break
+                            if self.time_check_half_luxe(enter_date[5], enter_date[6], hotel.half_luxe_free[k][3], k):
+                                hotel.half_luxe_full[k] = v
+                                new_date = Date(enter_date[5], enter_date[6])
+                                hotel.half_luxe_full[k].append(new_date.get_departure_date())
+                                cnt = k
+                                break
                 for k, v in hotel.luxe_free.items():
                     if v[2] == '2':
                         if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                            hotel.luxe_full[k] = v
-                            new_date = Date(enter_date[5], enter_date[6])
-                            hotel.luxe_full[k].append(new_date.get_departure_date())
-                            cnt = k
-                            break
+                            if self.time_check_luxe(enter_date[5], enter_date[6], hotel.luxe_free[k][3], k):
+                                hotel.luxe_full[k] = v
+                                new_date = Date(enter_date[5], enter_date[6])
+                                hotel.luxe_full[k].append(new_date.get_departure_date())
+                                cnt = k
+                                break
 
                 if cnt in hotel.half_luxe_free.keys():
                     del hotel.half_luxe_free[str(cnt)]
@@ -398,7 +382,7 @@ class Clients(Hotel):
 
                 return maxi_cost
             else:
-                Clients.day_lost += int(enter_date[7])
+                client.day_lost += int(enter_date[7])
                 return 0
 
     def find_half_luxe(self, enter_date):
@@ -419,28 +403,28 @@ class Clients(Hotel):
                     all_possible_costs.append(hotel.luxe_free[i][5])
                 if hotel.luxe_free[i][6] <= int(enter_date[7]):
                     all_possible_costs.append(hotel.luxe_free[i][6])
-        print(all_possible_costs)
         if len(all_possible_costs):
             maxi_cost = max(all_possible_costs)
-            print(maxi_cost)
 
             cnt = 0
             for k, v in hotel.half_luxe_free.items():
                 if v[2] == '3':
                     if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                        hotel.half_luxe_full[k] = v
-                        new_date = Date(enter_date[5], enter_date[6])
-                        hotel.half_luxe_full[k].append(new_date.get_departure_date())
-                        cnt = k
-                        break
+                        if self.time_check_half_luxe(enter_date[5], enter_date[6], hotel.half_luxe_free[k][3], k):
+                            hotel.half_luxe_full[k] = v
+                            new_date = Date(enter_date[5], enter_date[6])
+                            hotel.half_luxe_full[k].append(new_date.get_departure_date())
+                            cnt = k
+                            break
             for k, v in hotel.luxe_free.items():
                 if v[2] == '3':
                     if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                        hotel.luxe_full[k] = v
-                        new_date = Date(enter_date[5], enter_date[6])
-                        hotel.luxe_full[k].append(new_date.get_departure_date())
-                        cnt = k
-                        break
+                        if self.time_check_luxe(enter_date[5], enter_date[6], hotel.luxe_free[k][3], k):
+                            hotel.luxe_full[k] = v
+                            new_date = Date(enter_date[5], enter_date[6])
+                            hotel.luxe_full[k].append(new_date.get_departure_date())
+                            cnt = k
+                            break
 
             if cnt in hotel.half_luxe_free.keys():
                 del hotel.half_luxe_free[str(cnt)]
@@ -459,20 +443,19 @@ class Clients(Hotel):
                         all_possible_costs.append(hotel.luxe_free[i][5])
                     if hotel.luxe_free[i][6] <= int(enter_date[7]):
                         all_possible_costs.append(hotel.luxe_free[i][6])
-            print(all_possible_costs)
             if len(all_possible_costs):
                 maxi_cost = max(all_possible_costs)
-                print(maxi_cost)
 
                 cnt = 0
                 for k, v in hotel.luxe_free.items():
                     if v[2] == '3':
                         if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                            hotel.luxe_full[k] = v
-                            new_date = Date(enter_date[5], enter_date[6])
-                            hotel.luxe_full[k].append(new_date.get_departure_date())
-                            cnt = k
-                            break
+                            if self.time_check_luxe(enter_date[5], enter_date[6], hotel.luxe_free[k][3], k):
+                                hotel.luxe_full[k] = v
+                                new_date = Date(enter_date[5], enter_date[6])
+                                hotel.luxe_full[k].append(new_date.get_departure_date())
+                                cnt = k
+                                break
 
                 if cnt in hotel.half_luxe_free.keys():
                     del hotel.half_luxe_free[str(cnt)]
@@ -483,7 +466,7 @@ class Clients(Hotel):
 
                 return maxi_cost
             else:
-                Clients.day_lost += int(enter_date[7])
+                client.day_lost += int(enter_date[7])
                 return 0
 
     def find_luxe(self, enter_date):
@@ -497,23 +480,20 @@ class Clients(Hotel):
                     all_possible_costs.append(hotel.luxe_free[i][5])
                 if hotel.luxe_free[i][6] <= int(enter_date[7]):
                     all_possible_costs.append(hotel.luxe_free[i][6])
-        print(all_possible_costs)
         if len(all_possible_costs):
             maxi_cost = max(all_possible_costs)
-            print(maxi_cost)
 
             cnt = 0
             for k, v in hotel.luxe_free.items():
                 if v[2] == '4' or v[2] == '5' or v[2] == '6':
                     if v[4] == maxi_cost or v[5] == maxi_cost or v[6] == maxi_cost:
-                        hotel.luxe_full[k] = v
-                        new_date = Date(enter_date[5], enter_date[6])
-                        hotel.luxe_full[k].append(new_date.get_departure_date())
-                        cnt = k
-                        break
+                        if self.time_check_luxe(enter_date[5], enter_date[6], hotel.luxe_free[k][3], k):
+                            hotel.luxe_full[k] = v
+                            new_date = Date(enter_date[5], enter_date[6])
+                            hotel.luxe_full[k].append(new_date.get_departure_date())
+                            cnt = k
+                            break
 
-            if cnt in hotel.half_luxe_free.keys():
-                del hotel.half_luxe_free[str(cnt)]
             if cnt in hotel.luxe_free.keys():
                 del hotel.luxe_free[str(cnt)]
 
@@ -521,44 +501,73 @@ class Clients(Hotel):
 
             return maxi_cost
         else:
-            Clients.day_lost += int(enter_date[7])
+            client.day_lost += int(enter_date[7])
             return 0
 
     def out_single(self, day):
         out_list_single = []
         for k, v in hotel.single_full.items():
-            if int(v[7][1:2]) == day:
+            if int(v[-1][0:2]) == day:
                 hotel.single_free[k] = v
                 out_list_single.append(k)
         for i in out_list_single:
             del hotel.single_full[i]
 
+            cnt = i
+            for room in self.single_free_que:
+                if len(self.single_free_que[room]) > 0:
+                    for j in range(len(self.single_free_que[room])):
+                        if self.single_free_que[room][j-1][2] == cnt:
+                            del self.single_free_que[room][j-1]
+
     def out_double(self, day):
         out_list_double = []
         for k, v in hotel.double_full.items():
-            if int(v[7][1:2]) == day:
+            if int(v[-1][0:2]) == day:
                 hotel.double_free[k] = v
                 out_list_double.append(k)
         for i in out_list_double:
             del hotel.double_full[i]
 
+            cnt = i
+            for room in self.double_free_que:
+                if len(self.double_free_que[room]) > 0:
+                    for j in range(len(self.double_free_que[room])):
+                        if self.double_free_que[room][j-1][2] == cnt:
+                            del self.double_free_que[room][j-1]
+
     def out_half_luxe(self, day):
         out_list_half_luxe = []
         for k, v in hotel.half_luxe_full.items():
-            if int(v[7][1:2]) == day:
+            if int(v[-1][0:2]) == day:
                 hotel.half_luxe_free[k] = v
                 out_list_half_luxe.append(k)
         for i in out_list_half_luxe:
             del hotel.half_luxe_full[i]
 
+            cnt = i
+            for room in self.half_luxe_free_que:
+                if len(self.half_luxe_free_que[room]) > 0:
+                    for j in range(len(self.half_luxe_free_que[room])):
+                        if self.half_luxe_free_que[room][j-1][2] == cnt:
+                            del self.half_luxe_free_que[room][j-1]
+
+
     def out_luxe(self, day):
         out_list_luxe = []
         for k, v in hotel.luxe_full.items():
-            if int(v[7][1:2]) == day:
+            if int(v[-1][0:2]) == day:
                 hotel.luxe_free[k] = v
                 out_list_luxe.append(k)
         for i in out_list_luxe:
             del hotel.luxe_full[i]
+
+            cnt = i
+            for room in self.luxe_free_que:
+                if len(self.luxe_free_que[room]) > 0:
+                    for j in range(len(self.luxe_free_que[room])):
+                        if self.luxe_free_que[room][j-1][2] == cnt:
+                            del self.luxe_free_que[room][j-1]
 
     def show_info(self, day):
         booked = 0
@@ -575,7 +584,10 @@ client = Clients()
 
 client.read_booking_file(booking_file)
 
-for day in range(1, 3):
+for day in range(1, 31):
+
+    client.day_profit = 0
+    client.day_lost = 0
 
     client.out_single(day)
     client.out_double(day)
@@ -585,34 +597,39 @@ for day in range(1, 3):
     for client_number, enter_date in client.info.items():
         if day == int(enter_date[0][1:2]):
             if enter_date[4] == '1':
-                print('new_client')
-                client.profit += int(client.find_single(enter_date))
-                print(hotel.single_free)
-                print(hotel.single_full)
-                print(hotel.half_luxe_free)
-                print(hotel.half_luxe_full)
+                client.day_profit += int(client.find_single(enter_date))
             if enter_date[4] == '2':
-                print('new_client')
-                client.profit += int(client.find_double(enter_date))
-                print(hotel.double_free)
-                print(hotel.double_full)
-                print(hotel.half_luxe_free)
-                print(hotel.half_luxe_full)
+                client.day_profit += int(client.find_double(enter_date))
             if enter_date[4] == '3':
-                print('new_client')
-                client.profit += int(client.find_half_luxe(enter_date))
-                print(hotel.half_luxe_free)
-                print(hotel.half_luxe_full)
-                print(hotel.luxe_free)
-                print(hotel.luxe_full)
+                client.day_profit += int(client.find_half_luxe(enter_date))
             if enter_date[4] == '4' or enter_date[4] == '5' or enter_date[4] == '6':
-                print('new_client')
-                client.profit += int(client.find_luxe(enter_date))
-                print(hotel.luxe_free)
-                print(hotel.luxe_full)
-
-    print(client.day_profit)
-    print(client.day_lost)
+                client.day_profit += int(client.find_luxe(enter_date))
+    full_rooms = len(hotel.single_full) + len(hotel.double_full) + len(hotel.half_luxe_full)\
+                 + len(hotel.luxe_full)
+    print('количество занятых номеров:', full_rooms)
+    free_rooms = len(hotel.single_free) + len(hotel.double_free) + len(hotel.half_luxe_free)\
+                 + len(hotel.luxe_free)
+    print('количество свободных номеров:', free_rooms)
+    full_single_rooms = len(hotel.single_full)
+    free_single_rooms = len(hotel.single_free)
+    full_double_rooms = len(hotel.double_full)
+    free_double_rooms = len(hotel.double_free)
+    full_half_luxe_rooms = len(hotel.half_luxe_full)
+    free_half_luxe_rooms = len(hotel.half_luxe_free)
+    full_luxe_rooms = len(hotel.luxe_full)
+    free_luxe_rooms = len(hotel.luxe_free)
+    print('процент загруженности одноместных номеров:',\
+          full_single_rooms/(full_single_rooms + free_single_rooms) * 100,'%')
+    print('процент загруженности двуместных номеров:', \
+          full_double_rooms / (full_double_rooms + free_double_rooms) * 100, '%')
+    print('процент загруженности полу-люкс номеров:', \
+          full_half_luxe_rooms / (full_half_luxe_rooms + free_half_luxe_rooms) * 100, '%')
+    print('процент загруженности люкс номеров:', \
+          full_luxe_rooms / (full_luxe_rooms + free_luxe_rooms) * 100, '%')
+    print('процент загруженности отеля:', full_rooms / (full_rooms + free_rooms) * 100, '%')
+    print('полученный доход за день:', client.day_profit)
+    print('упущенный доход за день:', client.day_lost)
+'''
 print('final')
 print(hotel.single_free)
 print(hotel.single_full)
@@ -623,4 +640,9 @@ print(hotel.half_luxe_full)
 print(hotel.luxe_free)
 print(hotel.luxe_full)
 print(client.profit)
+print('\n' * 3)
 print(client.single_free_que)
+print(client.double_free_que)
+print(client.half_luxe_free_que)
+print(client.luxe_free_que)
+'''
