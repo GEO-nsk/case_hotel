@@ -1,8 +1,24 @@
-hotel_file_name = 'fund.txt'
-booking_file = 'booking_copy.txt'
+'''
+Gagol Egor 80
+Tarlo Evgeny 80
+'''
+
+import ru_local as ru
 
 
 class Date:
+    '''
+    Class of date.
+
+    Parameters:
+    -----------
+    entry_date : str
+                 Check-in date.
+    duration : str
+               Length of stay of customers in the hotel.
+    '''
+
+
     def __init__(self, entry_date, duration):
         self.entry_date = entry_date
         self.dd = int(entry_date[:2])
@@ -12,6 +28,16 @@ class Date:
         self.departure_date = None
 
     def get_departure_date(self):
+        '''
+        Calculates customers departure date.
+
+        Returns:
+        --------
+        str
+           Customers departure date.
+        '''
+
+
         self.dd += self.duration
         if self.dd > 31:
             self.mm += 1
@@ -22,11 +48,13 @@ class Date:
         self.departure_date = f'{self.dd:02d}.{self.mm:02d}.{self.yyyy}'
         return self.departure_date
 
-    def __repr__(self):
-        return f'Дата въезда: {self.entry_date}\nДата выезда: {self.departure_date}'
-
 
 class Hotel(Date):
+    '''
+    Class of hotel.
+    '''
+
+
     def __init__(self):
         self.single_free = {}
         self.double_free = {}
@@ -36,94 +64,125 @@ class Hotel(Date):
         self.double_full = {}
         self.half_luxe_full = {}
         self.luxe_full = {}
-        self.profit = []
 
     def read_file(self, hotel_file_name):
+        '''
+        Gets information about rooms from file and add its available costs.
+
+        Parameters:
+        -----------
+        hotel_file_name : str
+                          Name of file contained information about hotel rooms.
+
+        Modifies:
+        ---------
+        self.single_free : dict
+        self.double_free : dict
+        self.half_luxe_free : dict
+        self.luxe_free : dict
+                         Add all possible rooms costs.
+        '''
+
+
         with open(hotel_file_name, 'r', encoding='utf-8') as file:
             for item in file:
                 line_list = []
                 for itr in item.split():
                     line_list.append(itr)
 
-                if line_list[1] == 'одноместный':
+                if line_list[1] == ru.single:
                     self.single_free[line_list[0]] = line_list
-                    if line_list[3] == 'стандарт':
+                    if line_list[3] == ru.standard:
                         self.single_free[line_list[0]].append(2900)
                         self.single_free[line_list[0]].append(3180)
                         self.single_free[line_list[0]].append(3900)
-                    if line_list[3] == 'стандарт_улучшенный':
+                    if line_list[3] == ru.upgraded_standard:
                         self.single_free[line_list[0]].append(3480)
                         self.single_free[line_list[0]].append(3760)
                         self.single_free[line_list[0]].append(4480)
-                    if line_list[3] == 'апартамент':
+                    if line_list[3] == ru.apartament:
                         self.single_free[line_list[0]].append(4350)
                         self.single_free[line_list[0]].append(4630)
                         self.single_free[line_list[0]].append(5350)
 
-                if line_list[1] == 'двухместный':
+                if line_list[1] == ru.double:
                     self.double_free[line_list[0]] = line_list
-                    if line_list[3] == 'стандарт':
+                    if line_list[3] == ru.standard:
                         self.double_free[line_list[0]].append(2300)
                         self.double_free[line_list[0]].append(2580)
                         self.double_free[line_list[0]].append(3300)
-                    if line_list[3] == 'стандарт_улучшенный':
+                    if line_list[3] == ru.upgraded_standard:
                         self.double_free[line_list[0]].append(2760)
                         self.double_free[line_list[0]].append(3040)
                         self.double_free[line_list[0]].append(3760)
-                    if line_list[3] == 'апартамент':
+                    if line_list[3] == ru.apartament:
                         self.double_free[line_list[0]].append(3450)
                         self.double_free[line_list[0]].append(3730)
                         self.double_free[line_list[0]].append(4450)
 
-                if line_list[1] == 'полулюкс':
+                if line_list[1] == ru.half_luxe:
                     self.half_luxe_free[line_list[0]] = line_list
-                    if line_list[3] == 'стандарт':
+                    if line_list[3] == ru.standard:
                         self.half_luxe_free[line_list[0]].append(3200)
                         self.half_luxe_free[line_list[0]].append(3480)
                         self.half_luxe_free[line_list[0]].append(4200)
-                    if line_list[3] == 'стандарт_улучшенный':
+                    if line_list[3] == ru.upgraded_standard:
                         self.half_luxe_free[line_list[0]].append(3840)
                         self.half_luxe_free[line_list[0]].append(4120)
                         self.half_luxe_free[line_list[0]].append(4840)
-                    if line_list[3] == 'апартамент':
+                    if line_list[3] == ru.apartament:
                         self.half_luxe_free[line_list[0]].append(4800)
                         self.half_luxe_free[line_list[0]].append(5080)
                         self.half_luxe_free[line_list[0]].append(5800)
 
-                if line_list[1] == 'люкс':
+                if line_list[1] == ru.luxe:
                     self.luxe_free[line_list[0]] = line_list
-                    if line_list[3] == 'стандарт':
+                    if line_list[3] == ru.standard:
                         self.luxe_free[line_list[0]].append(4100)
                         self.luxe_free[line_list[0]].append(4380)
                         self.luxe_free[line_list[0]].append(5100)
-                    if line_list[3] == 'стандарт_улучшенный':
+                    if line_list[3] == ru.upgraded_standard:
                         self.luxe_free[line_list[0]].append(4920)
                         self.luxe_free[line_list[0]].append(5200)
                         self.luxe_free[line_list[0]].append(5920)
-                    if line_list[3] == 'апартамент':
+                    if line_list[3] == ru.apartament:
                         self.luxe_free[line_list[0]].append(6150)
                         self.luxe_free[line_list[0]].append(6430)
                         self.luxe_free[line_list[0]].append(7150)
 
 
-hotel = Hotel()
-
-hotel.read_file(hotel_file_name)
-
-
 class Clients(Hotel):
+    '''
+    Class of clients.
+
+    Attributes:
+    -----------
+    day_profit : int
+                 Calculates profit per day.
+    day_lost : int
+               Calculates lost profit per day.
+    '''
+
+
     day_profit = 0
     day_lost = 0
 
     def __init__(self):
         self.info = {}
-        self.profit = 0
-        self.single_free_que = {'стандарт': [], 'стандарт_улучшенный': [], 'апартамент': []}
-        self.double_free_que = {'стандарт': [], 'стандарт_улучшенный': [], 'апартамент': []}
-        self.half_luxe_free_que = {'стандарт': [], 'стандарт_улучшенный': [], 'апартамент': []}
-        self.luxe_free_que = {'стандарт': [], 'стандарт_улучшенный': [], 'апартамент': []}
+        self.single_free_que = {ru.standard: [], ru.upgraded_standard: [], ru.apartament: []}
+        self.double_free_que = {ru.standard: [], ru.upgraded_standard: [], ru.apartament: []}
+        self.half_luxe_free_que = {ru.standard: [], ru.upgraded_standard: [], ru.apartament: []}
+        self.luxe_free_que = {ru.standard: [], ru.upgraded_standard: [], ru.apartament: []}
 
     def read_booking_file(self, booking_file):
+        '''
+        Reads information about booking clients from file and adds it to "self.info".
+
+        Parameters:
+        -----------
+        booking_file : str
+                       File with information about booking clients.
+        '''
         count = 0
         with open(booking_file, 'r', encoding='utf-8') as file:
             for item in file:
@@ -134,6 +193,26 @@ class Clients(Hotel):
                 self.info[count] = line_list
 
     def time_check_single(self, entry_date, duration, room_type, room_num):
+        '''
+        Checks for available time period to book a single room.
+
+        Parameters:
+        -----------
+        entry_date : str
+                     Customers check-in date.
+        duration : str
+                   Length of stay of customers in the hotel.
+        room_type : str
+                    Type of room.
+        room_num : str
+                   Number of room.
+
+        Returns:
+        --------
+        "True" if certain period is available, "False" if it is not available.
+        '''
+
+
         date = Date(entry_date, duration)
         if len(self.single_free_que) == 0:
             self.single_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
@@ -148,6 +227,26 @@ class Clients(Hotel):
                 return False
 
     def time_check_double(self, entry_date, duration, room_type, room_num):
+        '''
+        Checks for available time period to book a double room.
+
+        Parameters:
+        -----------
+        entry_date : str
+                     Customers check-in date.
+        duration : str
+                   Length of stay of customers in the hotel.
+        room_type : str
+                    Type of room.
+        room_num : str
+                   Number of room.
+
+        Returns:
+        --------
+        "True" if certain period is available, "False" if it is not available.
+        '''
+
+
         date = Date(entry_date, duration)
         if len(self.double_free_que) == 0:
             self.double_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
@@ -162,6 +261,26 @@ class Clients(Hotel):
                 return False
 
     def time_check_half_luxe(self, entry_date, duration, room_type, room_num):
+        '''
+        Checks for available time period to book a half luxe room.
+
+        Parameters:
+        -----------
+        entry_date : str
+                     Customers check-in date.
+        duration : str
+                   Length of stay of customers in the hotel.
+        room_type : str
+                    Type of room.
+        room_num : str
+                   Number of room.
+
+        Returns:
+        --------
+        "True" if certain period is available, "False" if it is not available.
+        '''
+
+
         date = Date(entry_date, duration)
         if len(self.half_luxe_free_que) == 0:
             self.half_luxe_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
@@ -176,6 +295,26 @@ class Clients(Hotel):
                 return False
 
     def time_check_luxe(self, entry_date, duration, room_type, room_num):
+        '''
+        Checks for available time period to book a luxe room.
+
+        Parameters:
+        -----------
+        entry_date : str
+                     Customers check-in date.
+        duration : str
+                   Length of stay of customers in the hotel.
+        room_type : str
+                    Type of room.
+        room_num : str
+                   Number of room.
+
+        Returns:
+        --------
+        "True" if certain period is available, "False" if it is not available.
+        '''
+
+
         date = Date(entry_date, duration)
         if len(self.luxe_free_que) == 0:
             self.luxe_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
@@ -190,6 +329,21 @@ class Clients(Hotel):
                 return False
 
     def find_single(self, enter_date):
+        '''
+        Finds the right single room and calculates the final cost.
+
+        Parameters:
+        -----------
+        enter_date : str
+                     Customers check-in date.
+        
+        Returns:
+        --------
+        maxi_cost : int
+                    Cost of accommodation.
+        '''
+
+
         all_possible_costs = []
         for i in hotel.single_free:
             if hotel.single_free[i][4] <= int(enter_date[7]):
@@ -287,6 +441,21 @@ class Clients(Hotel):
                 return 0
 
     def find_double(self, enter_date):
+        '''
+        Finds the right double room and calculates the final cost.
+
+        Parameters:
+        -----------
+        enter_date : str
+                     Customers check-in date.
+        
+        Returns:
+        --------
+        maxi_cost : int
+                    Cost of accommodation.
+        '''
+
+
         all_possible_costs = []
         for i in hotel.double_free:
             if hotel.double_free[i][4] <= int(enter_date[7]):
@@ -386,6 +555,21 @@ class Clients(Hotel):
                 return 0
 
     def find_half_luxe(self, enter_date):
+        '''
+        Finds the right half luxe room and calculates the final cost.
+
+        Parameters:
+        -----------
+        enter_date : str
+                     Customers check-in date.
+        
+        Returns:
+        --------
+        maxi_cost : int
+                    Cost of accommodation.
+        '''
+
+
         all_possible_costs = []
         for i in hotel.half_luxe_free:
             if hotel.half_luxe_free[i][2] == '3':
@@ -470,6 +654,21 @@ class Clients(Hotel):
                 return 0
 
     def find_luxe(self, enter_date):
+        '''
+        Finds the right luxe room and calculates the final cost.
+
+        Parameters:
+        -----------
+        enter_date : str
+                     Customers check-in date.
+        
+        Returns:
+        --------
+        maxi_cost : int
+                    Cost of accommodation.
+        '''
+
+
         all_possible_costs = []
         for i in hotel.luxe_free:
             if hotel.luxe_free[i][2] == '4' or hotel.luxe_free[i][2] == '5' or \
@@ -505,6 +704,16 @@ class Clients(Hotel):
             return 0
 
     def out_single(self, day):
+        '''
+        Checks guests out of single room when their check-out date arrives.
+
+        Parameters:
+        -----------
+        day : int
+              Today's date (day).
+        '''
+
+
         out_list_single = []
         for k, v in hotel.single_full.items():
             if int(v[-1][0:2]) == day:
@@ -521,6 +730,16 @@ class Clients(Hotel):
                             del self.single_free_que[room][j-1]
 
     def out_double(self, day):
+        '''
+        Checks guests out of double room when their check-out date arrives.
+
+        Parameters:
+        -----------
+        day : int
+              Today's date (day).
+        '''
+
+
         out_list_double = []
         for k, v in hotel.double_full.items():
             if int(v[-1][0:2]) == day:
@@ -537,6 +756,16 @@ class Clients(Hotel):
                             del self.double_free_que[room][j-1]
 
     def out_half_luxe(self, day):
+        '''
+        Checks guests out of half luxe room when their check-out date arrives.
+
+        Parameters:
+        -----------
+        day : int
+              Today's date (day).
+        '''
+
+
         out_list_half_luxe = []
         for k, v in hotel.half_luxe_full.items():
             if int(v[-1][0:2]) == day:
@@ -554,6 +783,16 @@ class Clients(Hotel):
 
 
     def out_luxe(self, day):
+        '''
+        Checks guests out of luxe room when their check-out date arrives.
+
+        Parameters:
+        -----------
+        day : int
+              Today's date (day).
+        '''
+
+
         out_list_luxe = []
         for k, v in hotel.luxe_full.items():
             if int(v[-1][0:2]) == day:
@@ -569,23 +808,19 @@ class Clients(Hotel):
                         if self.luxe_free_que[room][j-1][2] == cnt:
                             del self.luxe_free_que[room][j-1]
 
-    def show_info(self, day):
-        booked = 0
-        for i in self.single_free_que:
-            if int(i[0][:2]) == day:
-                booked += 1
-        return booked, Hotel.day_profit, Hotel.day_lost
 
-    def __repr__(self):
-        return f'Info: {self.info}'
+hotel_file_name = 'fund.txt'
+booking_file = 'booking.txt'
 
+hotel = Hotel()
+hotel.read_file(hotel_file_name)
 
 client = Clients()
-
 client.read_booking_file(booking_file)
 
-for day in range(1, 31):
 
+for day in range(1, 31):
+    print(f'{ru.day}: {day}')
     client.day_profit = 0
     client.day_lost = 0
 
@@ -606,10 +841,10 @@ for day in range(1, 31):
                 client.day_profit += int(client.find_luxe(enter_date))
     full_rooms = len(hotel.single_full) + len(hotel.double_full) + len(hotel.half_luxe_full)\
                  + len(hotel.luxe_full)
-    print('количество занятых номеров:', full_rooms)
+    print(f'{ru.room_occupancy}:', full_rooms)
     free_rooms = len(hotel.single_free) + len(hotel.double_free) + len(hotel.half_luxe_free)\
                  + len(hotel.luxe_free)
-    print('количество свободных номеров:', free_rooms)
+    print(f'{ru.room_availability}:', free_rooms)
     full_single_rooms = len(hotel.single_full)
     free_single_rooms = len(hotel.single_free)
     full_double_rooms = len(hotel.double_full)
@@ -618,31 +853,15 @@ for day in range(1, 31):
     free_half_luxe_rooms = len(hotel.half_luxe_free)
     full_luxe_rooms = len(hotel.luxe_full)
     free_luxe_rooms = len(hotel.luxe_free)
-    print('процент загруженности одноместных номеров:',\
+    print(f'{ru.single_room_occupancy_rate}:',\
           full_single_rooms/(full_single_rooms + free_single_rooms) * 100,'%')
-    print('процент загруженности двуместных номеров:', \
+    print(f'{ru.double_room_occupancy_rate}:', \
           full_double_rooms / (full_double_rooms + free_double_rooms) * 100, '%')
-    print('процент загруженности полу-люкс номеров:', \
+    print(f'{ru.half_luxe_room_occupancy_rate}:', \
           full_half_luxe_rooms / (full_half_luxe_rooms + free_half_luxe_rooms) * 100, '%')
-    print('процент загруженности люкс номеров:', \
+    print(f'{ru.luxe_room_occupancy_rate}:', \
           full_luxe_rooms / (full_luxe_rooms + free_luxe_rooms) * 100, '%')
-    print('процент загруженности отеля:', full_rooms / (full_rooms + free_rooms) * 100, '%')
-    print('полученный доход за день:', client.day_profit)
-    print('упущенный доход за день:', client.day_lost)
-'''
-print('final')
-print(hotel.single_free)
-print(hotel.single_full)
-print(hotel.double_free)
-print(hotel.double_full)
-print(hotel.half_luxe_free)
-print(hotel.half_luxe_full)
-print(hotel.luxe_free)
-print(hotel.luxe_full)
-print(client.profit)
-print('\n' * 3)
-print(client.single_free_que)
-print(client.double_free_que)
-print(client.half_luxe_free_que)
-print(client.luxe_free_que)
-'''
+    print(f'{ru.hotel_occupancy_rate}:', full_rooms / (full_rooms + free_rooms) * 100, '%')
+    print(f'{ru.profit_per_day}:', client.day_profit)
+    print(f'{ru.lost_per_day}:', client.day_lost)
+    print('-' * 10)
