@@ -18,7 +18,6 @@ class Date:
                Length of stay of customers in the hotel.
     '''
 
-
     def __init__(self, entry_date, duration):
         self.entry_date = entry_date
         self.dd = int(entry_date[:2])
@@ -37,7 +36,6 @@ class Date:
            Customers departure date.
         '''
 
-
         self.dd += self.duration
         if self.dd > 31:
             self.mm += 1
@@ -53,7 +51,6 @@ class Hotel(Date):
     '''
     Class of hotel.
     '''
-
 
     def __init__(self):
         self.single_free = {}
@@ -82,7 +79,6 @@ class Hotel(Date):
         self.luxe_free : dict
                          Add all possible rooms costs.
         '''
-
 
         with open(hotel_file_name, 'r', encoding='utf-8') as file:
             for item in file:
@@ -163,7 +159,6 @@ class Clients(Hotel):
                Calculates lost profit per day.
     '''
 
-
     day_profit = 0
     day_lost = 0
 
@@ -212,14 +207,15 @@ class Clients(Hotel):
         "True" if certain period is available, "False" if it is not available.
         '''
 
-
         date = Date(entry_date, duration)
         if len(self.single_free_que) == 0:
             self.single_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
             return True
         else:
-            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(period[0][:2]))
-                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(period[1][:2]))
+            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(
+                    period[0][:2]))
+                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(
+                period[1][:2]))
                    for period in self.single_free_que[room_type]):
                 self.single_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
                 return True
@@ -246,14 +242,15 @@ class Clients(Hotel):
         "True" if certain period is available, "False" if it is not available.
         '''
 
-
         date = Date(entry_date, duration)
         if len(self.double_free_que) == 0:
             self.double_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
             return True
         else:
-            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(period[0][:2]))
-                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(period[1][:2]))
+            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(
+                    period[0][:2]))
+                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(
+                period[1][:2]))
                    for period in self.double_free_que[room_type]):
                 self.double_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
                 return True
@@ -280,14 +277,15 @@ class Clients(Hotel):
         "True" if certain period is available, "False" if it is not available.
         '''
 
-
         date = Date(entry_date, duration)
         if len(self.half_luxe_free_que) == 0:
             self.half_luxe_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
             return True
         else:
-            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(period[0][:2]))
-                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(period[1][:2]))
+            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(
+                    period[0][:2]))
+                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(
+                period[1][:2]))
                    for period in self.half_luxe_free_que[room_type]):
                 self.half_luxe_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
                 return True
@@ -314,14 +312,15 @@ class Clients(Hotel):
         "True" if certain period is available, "False" if it is not available.
         '''
 
-
         date = Date(entry_date, duration)
         if len(self.luxe_free_que) == 0:
             self.luxe_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
             return True
         else:
-            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(period[0][:2]))
-                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(period[1][:2]))
+            if all((int(entry_date[:2]) < int(period[0][:2]) and int(date.get_departure_date()[:2]) < int(
+                    period[0][:2]))
+                   or (int(entry_date[:2]) > int(period[1][:2]) and int(date.get_departure_date()[:2]) > int(
+                period[1][:2]))
                    for period in self.luxe_free_que[room_type]):
                 self.luxe_free_que[room_type].append((entry_date, date.get_departure_date(), room_num))
                 return True
@@ -336,13 +335,12 @@ class Clients(Hotel):
         -----------
         enter_date : str
                      Customers check-in date.
-        
+
         Returns:
         --------
         maxi_cost : int
                     Cost of accommodation.
         '''
-
 
         all_possible_costs = []
         for i in hotel.single_free:
@@ -435,7 +433,7 @@ class Clients(Hotel):
 
                 Clients.day_profit += maxi_cost
 
-                return maxi_cost
+                return maxi_cost * 0.7
             else:
                 client.day_lost += int(enter_date[7])
                 return 0
@@ -448,13 +446,12 @@ class Clients(Hotel):
         -----------
         enter_date : str
                      Customers check-in date.
-        
+
         Returns:
         --------
         maxi_cost : int
                     Cost of accommodation.
         '''
-
 
         all_possible_costs = []
         for i in hotel.double_free:
@@ -549,7 +546,7 @@ class Clients(Hotel):
 
                 Clients.day_profit += maxi_cost
 
-                return maxi_cost
+                return maxi_cost * 0.7
             else:
                 client.day_lost += int(enter_date[7])
                 return 0
@@ -562,13 +559,12 @@ class Clients(Hotel):
         -----------
         enter_date : str
                      Customers check-in date.
-        
+
         Returns:
         --------
         maxi_cost : int
                     Cost of accommodation.
         '''
-
 
         all_possible_costs = []
         for i in hotel.half_luxe_free:
@@ -648,7 +644,7 @@ class Clients(Hotel):
 
                 Clients.day_profit += maxi_cost
 
-                return maxi_cost
+                return maxi_cost * 0.7
             else:
                 client.day_lost += int(enter_date[7])
                 return 0
@@ -661,13 +657,12 @@ class Clients(Hotel):
         -----------
         enter_date : str
                      Customers check-in date.
-        
+
         Returns:
         --------
         maxi_cost : int
                     Cost of accommodation.
         '''
-
 
         all_possible_costs = []
         for i in hotel.luxe_free:
@@ -713,7 +708,6 @@ class Clients(Hotel):
               Today's date (day).
         '''
 
-
         out_list_single = []
         for k, v in hotel.single_full.items():
             if int(v[-1][0:2]) == day:
@@ -726,8 +720,8 @@ class Clients(Hotel):
             for room in self.single_free_que:
                 if len(self.single_free_que[room]) > 0:
                     for j in range(len(self.single_free_que[room])):
-                        if self.single_free_que[room][j-1][2] == cnt:
-                            del self.single_free_que[room][j-1]
+                        if self.single_free_que[room][j - 1][2] == cnt:
+                            del self.single_free_que[room][j - 1]
 
     def out_double(self, day):
         '''
@@ -738,7 +732,6 @@ class Clients(Hotel):
         day : int
               Today's date (day).
         '''
-
 
         out_list_double = []
         for k, v in hotel.double_full.items():
@@ -752,8 +745,8 @@ class Clients(Hotel):
             for room in self.double_free_que:
                 if len(self.double_free_que[room]) > 0:
                     for j in range(len(self.double_free_que[room])):
-                        if self.double_free_que[room][j-1][2] == cnt:
-                            del self.double_free_que[room][j-1]
+                        if self.double_free_que[room][j - 1][2] == cnt:
+                            del self.double_free_que[room][j - 1]
 
     def out_half_luxe(self, day):
         '''
@@ -764,7 +757,6 @@ class Clients(Hotel):
         day : int
               Today's date (day).
         '''
-
 
         out_list_half_luxe = []
         for k, v in hotel.half_luxe_full.items():
@@ -778,9 +770,8 @@ class Clients(Hotel):
             for room in self.half_luxe_free_que:
                 if len(self.half_luxe_free_que[room]) > 0:
                     for j in range(len(self.half_luxe_free_que[room])):
-                        if self.half_luxe_free_que[room][j-1][2] == cnt:
-                            del self.half_luxe_free_que[room][j-1]
-
+                        if self.half_luxe_free_que[room][j - 1][2] == cnt:
+                            del self.half_luxe_free_que[room][j - 1]
 
     def out_luxe(self, day):
         '''
@@ -791,7 +782,6 @@ class Clients(Hotel):
         day : int
               Today's date (day).
         '''
-
 
         out_list_luxe = []
         for k, v in hotel.luxe_full.items():
@@ -805,8 +795,8 @@ class Clients(Hotel):
             for room in self.luxe_free_que:
                 if len(self.luxe_free_que[room]) > 0:
                     for j in range(len(self.luxe_free_que[room])):
-                        if self.luxe_free_que[room][j-1][2] == cnt:
-                            del self.luxe_free_que[room][j-1]
+                        if self.luxe_free_que[room][j - 1][2] == cnt:
+                            del self.luxe_free_que[room][j - 1]
 
 
 hotel_file_name = 'fund.txt'
@@ -817,7 +807,6 @@ hotel.read_file(hotel_file_name)
 
 client = Clients()
 client.read_booking_file(booking_file)
-
 
 for day in range(1, 31):
     print(f'{ru.day}: {day}')
@@ -839,10 +828,10 @@ for day in range(1, 31):
                 client.day_profit += int(client.find_half_luxe(enter_date))
             if enter_date[4] == '4' or enter_date[4] == '5' or enter_date[4] == '6':
                 client.day_profit += int(client.find_luxe(enter_date))
-    full_rooms = len(hotel.single_full) + len(hotel.double_full) + len(hotel.half_luxe_full)\
+    full_rooms = len(hotel.single_full) + len(hotel.double_full) + len(hotel.half_luxe_full) \
                  + len(hotel.luxe_full)
     print(f'{ru.room_occupancy}:', full_rooms)
-    free_rooms = len(hotel.single_free) + len(hotel.double_free) + len(hotel.half_luxe_free)\
+    free_rooms = len(hotel.single_free) + len(hotel.double_free) + len(hotel.half_luxe_free) \
                  + len(hotel.luxe_free)
     print(f'{ru.room_availability}:', free_rooms)
     full_single_rooms = len(hotel.single_full)
@@ -853,8 +842,8 @@ for day in range(1, 31):
     free_half_luxe_rooms = len(hotel.half_luxe_free)
     full_luxe_rooms = len(hotel.luxe_full)
     free_luxe_rooms = len(hotel.luxe_free)
-    print(f'{ru.single_room_occupancy_rate}:',\
-          full_single_rooms/(full_single_rooms + free_single_rooms) * 100,'%')
+    print(f'{ru.single_room_occupancy_rate}:', \
+          full_single_rooms / (full_single_rooms + free_single_rooms) * 100, '%')
     print(f'{ru.double_room_occupancy_rate}:', \
           full_double_rooms / (full_double_rooms + free_double_rooms) * 100, '%')
     print(f'{ru.half_luxe_room_occupancy_rate}:', \
